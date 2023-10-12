@@ -1,11 +1,37 @@
 const chai = require('chai');
 const chaiHttp = require('chai-http');
-const app = require('../index.js');
+const app = require('../index.js'); 
 const expect = chai.expect;
 
 chai.use(chaiHttp);
 
 describe('Calendar API', () => {
+  let server; 
+
+  before((done) => {
+  server = app.listen(3000, (err) => {
+    if (err) {
+      console.error(err);
+      done(err);
+    } else {
+      console.log('Server is running on port 3000');
+      done();
+    }
+  });
+});
+
+  after((done) => {
+    if (server) {
+      server.close(() => {
+        console.log('Server has been closed for testing');
+        done();
+      });
+    } else {
+      console.error('Server is undefined; could not close it.');
+      done();
+    }
+  });
+
   it('should create a new event', (done) => {
     chai
       .request(app)

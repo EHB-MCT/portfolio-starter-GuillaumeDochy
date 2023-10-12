@@ -5,7 +5,7 @@
   "main": "src/index.js",
   "scripts": {
     "start": "nodemon src/index.js",
-    "test": "mocha path/to/calendar-api.test.js"
+    "test": "mocha src/test/calendar-api.test.js"
   },
   "author": "Guillaume DOCHY",
   "license": "ISC",
@@ -28,5 +28,8 @@
     "pg": "^8.8.0",
     "server.js": "^1.0.0",
     "supertest": "^6.3.3"
+  },
+  "devDependencies": {
+    "chai-http": "^4.4.0"
   }
 }

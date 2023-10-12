@@ -5,6 +5,7 @@ const bodyParser = require('body-parser')
 const cors = require('cors')
 
 
+
 mongoose.connect('mongodb+srv://admin:admin@cluster0.0ml8z.mongodb.net/?retryWrites=true&w=majority', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -16,14 +17,12 @@ db.once('open', () => {
   console.log('Connected to MongoDB');
 });
 
-app.listen(3000, (err) => {
-    if(!err){
-        console.log("running on port " + 3000)
-    }
-    else {
-        console.error(err)
-    }
-})
+const port = process.env.PORT || 3000;
+
+const server = app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
+});
+
 app.use(bodyParser.json())
 app.use(cors())
 app.use(express.json());
