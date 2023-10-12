@@ -33,6 +33,7 @@ const eventSchema = new mongoose.Schema({
   description: String,
   start: Date,
   end: Date,
+  priority: String,
 });
 
 const Event = mongoose.model('Event', eventSchema);
@@ -53,6 +54,33 @@ app.get('/api/events', async (req, res) => {
     res.json(events);
   } catch (error) {
     res.status(500).json({ error: 'Error fetching events' });
+  }
+});
+
+app.get('/api/events/important', async (req, res) => {
+  try {
+    const importantEvents = await Event.find({ priority: 'high' });
+    res.json(importantEvents);
+  } catch (error) {
+    res.status(500).json({ error: 'Error fetching important events' });
+  }
+});
+
+app.get('/api/events/medium', async (req, res) => {
+  try {
+    const importantEvents = await Event.find({ priority: 'medium' }); 
+    res.json(importantEvents);
+  } catch (error) {
+    res.status(500).json({ error: 'Error fetching medium important events' });
+  }
+});
+
+app.get('/api/events/unimportant', async (req, res) => {
+  try {
+    const importantEvents = await Event.find({ priority: 'low' });
+    res.json(importantEvents);
+  } catch (error) {
+    res.status(500).json({ error: 'Error fetching unimportant events' });
   }
 });
 
