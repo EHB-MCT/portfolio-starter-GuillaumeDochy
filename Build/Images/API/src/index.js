@@ -36,3 +36,40 @@ const eventSchema = new mongoose.Schema({
 });
 
 const Event = mongoose.model('Event', eventSchema);
+
+app.post('/api/events', async (req, res) => {
+  try {
+    const event = new Event(req.body);
+    await event.save();
+    res.json(event);
+  } catch (error) {
+    res.status(500).json({ error: 'Error creating event' });
+  }
+});
+
+app.get('/api/events', async (req, res) => {
+  try {
+    const events = await Event.find();
+    res.json(events);
+  } catch (error) {
+    res.status(500).json({ error: 'Error fetching events' });
+  }
+});
+
+app.put('/api/events/:id', async (req, res) => {
+  try {
+    const event = await Event.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    res.json(event);
+  } catch (error) {
+    res.status(500).json({ error: 'Error updating event' });
+  }
+});
+
+app.delete('/api/events/:id', async (req, res) => {
+  try {
+    await Event.findByIdAndRemove(req.params.id);
+    res.json({ message: 'Event deleted' });
+  } catch (error) {
+    res.status(500).json({ error: 'Error deleting event' });
+  }
+});
