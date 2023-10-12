@@ -1,17 +1,20 @@
 const express = require("express")
 const app = express()
+const mongoose = require("mongoose")
 const bodyParser = require('body-parser')
-
-const {
-  MongoClient,
-    ObjectId, 
-    ServerApiVersion
-} = require('mongodb')
-
-const uri = "mongodb+srv://admin:admin@cluster0.0ml8z.mongodb.net/?retryWrites=true&w=majority";
-const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
-const dbName = "Dev5"
 const cors = require('cors')
+
+
+mongoose.connect('mongodb+srv://admin:admin@cluster0.0ml8z.mongodb.net/?retryWrites=true&w=majority', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
+
+const db = mongoose.connection;
+db.on('error', console.error.bind(console, 'Connection error:'));
+db.once('open', () => {
+  console.log('Connected to MongoDB');
+});
 
 app.listen(3000, (err) => {
     if(!err){
@@ -21,6 +24,15 @@ app.listen(3000, (err) => {
         console.error(err)
     }
 })
-
 app.use(bodyParser.json())
 app.use(cors())
+app.use(express.json());
+
+const eventSchema = new mongoose.Schema({
+  title: String,
+  description: String,
+  start: Date,
+  end: Date,
+});
+
+const Event = mongoose.model('Event', eventSchema);
