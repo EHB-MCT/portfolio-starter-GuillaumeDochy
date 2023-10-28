@@ -1,15 +1,17 @@
 const chai = require('chai');
 const chaiHttp = require('chai-http');
-const app = require('../index.js'); 
+const app = require('../index.js');
 const expect = chai.expect;
 
+
 chai.use(chaiHttp);
+// app.use(express.json)
 
 describe('Calendar API', () => {
   let server; 
 
   before((done) => {
-  server = app.listen(3000, (err) => {
+  server = app.listen(3001, (err) => {
     if (err) {
       console.error(err);
       done(err);

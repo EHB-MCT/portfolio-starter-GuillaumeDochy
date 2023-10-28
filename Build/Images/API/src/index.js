@@ -4,8 +4,6 @@ const mongoose = require("mongoose")
 const bodyParser = require('body-parser')
 const cors = require('cors')
 
-
-
 mongoose.connect('mongodb+srv://admin:admin@cluster0.0ml8z.mongodb.net/?retryWrites=true&w=majority', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -19,7 +17,7 @@ db.once('open', () => {
 
 const port = process.env.PORT || 3000;
 
-const server = app.listen(port, () => {
+app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
 
@@ -100,3 +98,5 @@ app.delete('/api/events/:id', async (req, res) => {
     res.status(500).json({ error: 'Error deleting event' });
   }
 });
+
+module.exports = app
