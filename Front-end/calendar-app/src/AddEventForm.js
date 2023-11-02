@@ -1,34 +1,29 @@
 import React, { useState } from 'react';
-import EventDetailsModal from './EventDetailsModal';
-import { createEvent } from './api';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 
-const AddEventForm = ({ onAddEvent }) => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+const AddEventForm = ({ selectedDate, onAddEvent }) => {
   const [newEvent, setNewEvent] = useState({
     title: '',
     description: '',
-    start: new Date(),
-    end: new Date(),
+    start: selectedDate,
+    end: selectedDate,
     priority: 'low',
   });
 
-  const openModal = () => {
-    setIsModalOpen(true);
-  };
-
   const handleSubmit = () => {
     onAddEvent(newEvent);
-    setIsModalOpen(false);
+    setNewEvent({
+      title: '',
+      description: '',
+      start: selectedDate,
+      end: selectedDate,
+      priority: 'low',
+    });
   };
 
   return (
     <div>
-      <button onClick={openModal}>Add Event</button>
-      <EventDetailsModal
-        isOpen={isModalOpen}
-        onRequestClose={() => setIsModalOpen(false)}
-        event={newEvent}
-      />
       <div>
         <input
           type="text"
@@ -36,13 +31,46 @@ const AddEventForm = ({ onAddEvent }) => {
           value={newEvent.title}
           onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })}
         />
+      </div>
+      <div>
         <input
           type="text"
           placeholder="Event Description"
           value={newEvent.description}
-          onChange={(e) => setNewEvent({ ...newEvent, description: e.target.value })}
+          onChange={(e) =>
+            setNewEvent({ ...newEvent, description: e.target.value })
+          }
         />
-        {/* Include inputs for start, end, and priority */}
+      </div>
+      <div>
+        <DatePicker
+          selected={newEvent.start}
+          onChange={(date) => setNewEvent({ ...newEvent, start: date })}
+          showTimeSelect
+          dateFormat="Pp"
+          placeholderText="Start Date and Time"
+        />
+      </div>
+      <div>
+        <DatePicker
+          selected={newEvent.end}
+          onChange={(date) => setNewEvent({ ...newEvent, end: date })}
+          showTimeSelect
+          dateFormat="Pp"
+          placeholderText="End Date and Time"
+        />
+      </div>
+      <div>
+        <select
+          value={newEvent.priority}
+          onChange={(e) => setNewEvent({ ...newEvent, priority: e.target.value })}
+        >
+          <option value="low">Low</option>
+          <option value="medium">Medium</option>
+          <option value="high">High</option>
+        </select>
+      </div>
+      <div>
         <button onClick={handleSubmit}>Save Event</button>
       </div>
     </div>

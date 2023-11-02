@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import MyCalendar from './MyCalendar';
+import AddEventForm from './AddEventForm';
+import EventDetailsModal from './EventDetailsModal';
 import { fetchEvents, createEvent } from './api';
 
 const App = () => {
@@ -31,31 +33,19 @@ const App = () => {
       />
 
       {isEventFormOpen && (
-        <div className="modal">
-          <div className="modal-content">
-            <span className="close" onClick={() => setIsEventFormOpen(false)}>
-              &times;
-            </span>
-            <h2>Add Event</h2>
-            {/* Add your event creation form here */}
-          </div>
-        </div>
+        <AddEventForm
+          isOpen={isEventFormOpen}
+          onRequestClose={() => setIsEventFormOpen(false)}
+          onSubmit={handleAddEvent}
+        />
       )}
 
       {selectedEvent && (
-        <div className="modal">
-          <div className="modal-content">
-            <span className="close" onClick={() => setSelectedEvent(null)}>
-              &times;
-            </span>
-            <h2>Event Details</h2>
-            <p><strong>Title:</strong> {selectedEvent.title}</p>
-            <p><strong>Description:</strong> {selectedEvent.description}</p>
-            <p><strong>Start:</strong> {selectedEvent.start.toString()}</p>
-            <p><strong>End:</strong> {selectedEvent.end.toString()}</p>
-            <p><strong>Priority:</strong> {selectedEvent.priority}</p>
-          </div>
-        </div>
+        <EventDetailsModal
+          isOpen={selectedEvent !== null}
+          onRequestClose={() => setSelectedEvent(null)}
+          event={selectedEvent}
+        />
       )}
     </div>
   );

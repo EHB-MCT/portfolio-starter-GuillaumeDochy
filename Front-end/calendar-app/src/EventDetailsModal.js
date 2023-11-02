@@ -16,10 +16,11 @@ const EventDetailsModal = ({ isOpen, onRequestClose, event, onAddEvent }) => {
       end: event ? event.end : null,
       priority: newEvent.priority,
     });
+    onRequestClose();
   };
 
   return (
-    <Modal>
+    <Modal isOpen={isOpen} onRequestClose={onRequestClose}>
       <h2>Event Details</h2>
       <div>
         <input
