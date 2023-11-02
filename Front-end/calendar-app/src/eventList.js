@@ -1,21 +1,24 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
-function EventList() {
-  const [events, setEvents] = useState([]);
+function EventList({ events }) {
+  const [sortedEvents, setSortedEvents] = useState(events);
 
-  useEffect(() => {
-    fetch('http://localhost:4000/api/events')
-      .then((response) => response.json())
-      .then((data) => setEvents(data))
-      .catch((error) => console.error('Error fetching data:', error));
-  }, []);
+  const sortEventsByPriority = (priority) => {
+    const sorted = events.filter((event) => event.priority === priority);
+    setSortedEvents(sorted);
+  };
 
   return (
     <div>
-      <h2>Events</h2>
+      <h2>Event List</h2>
+      <button onClick={() => sortEventsByPriority('low')}>Low Priority</button>
+      <button onClick={() => sortEventsByPriority('medium')}>Medium Priority</button>
+      <button onClick={() => sortEventsByPriority('high')}>High Priority</button>
       <ul>
-        {events.map((event) => (
-          <li key={event.id}>{event.title}</li>
+        {sortedEvents.map((event) => (
+          <li key={event.id}>
+            {event.title} - Priority: {event.priority}
+          </li>
         ))}
       </ul>
     </div>

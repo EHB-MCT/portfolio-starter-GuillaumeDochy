@@ -1,35 +1,26 @@
 import React, { useState, useEffect } from 'react';
-import EventList from './eventList';
-import EventForm from './EventForm';
-import MyCalendar from './calendar'; // Import the calendar component
-
+import Calendar from './Calendar';
+import EventList from './EventList';
+import AddEvent from './AddEvent';
 
 function App() {
-   const [events, setEvents] = useState([]);
+  const [events, setEvents] = useState([]);
+  const [selectedDate, setSelectedDate] = useState(new Date());
 
-   const addEvent = (eventData) => {
-    fetch('http://localhost:4000/api/events', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(eventData),
-    })
+  useEffect(() => {
+    // Fetch events from your API and set them in the state
+    // You can replace this with your actual API endpoint.
+    fetch('your_api_endpoint')
       .then((response) => response.json())
-      .then((newEvent) => {
-        setEvents([...events, newEvent]);
-      })
-      .catch((error) => {
-        console.error('Error creating event:', error);
-      });
-  };
+      .then((data) => setEvents(data));
+  }, []);
 
   return (
-    <div>
-      <h1>My Calendar App</h1>
-      <EventForm onAddEvent={addEvent} />
-      <EventList />
-      <MyCalendar />
+    <div className="App">
+      <h1>Calendar App</h1>
+      <Calendar events={events} selectedDate={selectedDate} />
+      <EventList events={events} />
+      <AddEvent />
     </div>
   );
 }
