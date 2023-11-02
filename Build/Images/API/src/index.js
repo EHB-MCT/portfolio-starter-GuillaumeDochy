@@ -6,9 +6,7 @@ const { MongoClient } = require("mongodb");
 
 app.use(bodyParser.json());
 app.use(
-  cors({
-    origin: "http://localhost:3000",
-  })
+  cors()
 );
 
 const mongoURL =
@@ -29,7 +27,7 @@ async function connectToMongoDB() {
 
 connectToMongoDB();
 
-const eventCollection = client.db("Dev5").collection("events");
+const eventCollection = client.db("Dev5").collection("Event");
 
 app.listen(4000, (err) => {
   if (!err) {
