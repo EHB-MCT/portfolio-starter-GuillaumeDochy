@@ -1,28 +1,64 @@
 import React, { useState, useEffect } from 'react';
-import Calendar from './Calendar';
-import EventList from './EventList';
-import AddEvent from './AddEvent';
+import MyCalendar from './MyCalendar';
+import { fetchEvents, createEvent } from './api';
 
-function App() {
+const App = () => {
   const [events, setEvents] = useState([]);
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [isEventFormOpen, setIsEventFormOpen] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState(null);
 
   useEffect(() => {
-    // Fetch events from your API and set them in the state
-    // You can replace this with your actual API endpoint.
-    fetch('your_api_endpoint')
-      .then((response) => response.json())
-      .then((data) => setEvents(data));
+    fetchEvents()
+      .then((data) => setEvents(data))
+      .catch((error) => console.error('Error fetching events:', error));
   }, []);
 
+  const handleAddEvent = (newEvent) => {
+    createEvent(newEvent)
+      .then((createdEvent) => {
+        setEvents([...events, createdEvent]);
+        setIsEventFormOpen(false);
+      })
+      .catch((error) => console.error('Error adding event:', error));
+  };
+
   return (
-    <div className="App">
-      <h1>Calendar App</h1>
-      <Calendar events={events} selectedDate={selectedDate} />
-      <EventList events={events} />
-      <AddEvent />
+    <div>
+      <MyCalendar
+        events={events}
+        onAddEvent={() => setIsEventFormOpen(true)}
+        onEventClick={(event) => setSelectedEvent(event)}
+      />
+
+      {isEventFormOpen && (
+        <div className="modal">
+          <div className="modal-content">
+            <span className="close" onClick={() => setIsEventFormOpen(false)}>
+              &times;
+            </span>
+            <h2>Add Event</h2>
+            {/* Add your event creation form here */}
+          </div>
+        </div>
+      )}
+
+      {selectedEvent && (
+        <div className="modal">
+          <div className="modal-content">
+            <span className="close" onClick={() => setSelectedEvent(null)}>
+              &times;
+            </span>
+            <h2>Event Details</h2>
+            <p><strong>Title:</strong> {selectedEvent.title}</p>
+            <p><strong>Description:</strong> {selectedEvent.description}</p>
+            <p><strong>Start:</strong> {selectedEvent.start.toString()}</p>
+            <p><strong>End:</strong> {selectedEvent.end.toString()}</p>
+            <p><strong>Priority:</strong> {selectedEvent.priority}</p>
+          </div>
+        </div>
+      )}
     </div>
   );
-}
+};
 
 export default App;
