@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Modal from 'react-modal';
 
+
 const EventDetailsModal = ({ isOpen, onRequestClose, event, onAddEvent }) => {
   const [newEvent, setNewEvent] = useState({
     title: '',
@@ -16,7 +17,6 @@ const EventDetailsModal = ({ isOpen, onRequestClose, event, onAddEvent }) => {
       end: event ? event.end : null,
       priority: newEvent.priority,
     });
-    onRequestClose();
   };
 
   return (

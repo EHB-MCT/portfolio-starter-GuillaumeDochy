@@ -1,13 +1,28 @@
-import axios from 'axios';
 
-const API_URL = 'http://localhost:4000/api';
+const API_BASE_URL = 'http://localhost:4000/api'; 
 
-export const fetchEvents = async () => {
-  const response = await axios.get(`${API_URL}/events`);
-  return response.data;
+export const fetchEvents = () => {
+  return fetch(`${API_BASE_URL}/events`)
+    .then((response) => response.json())
+    .then((data) => data)
+    .catch((error) => {
+      console.error('Error fetching events:', error);
+      throw error;
+    });
 };
 
-export const createEvent = async (event) => {
-  const response = await axios.post(`${API_URL}/events`, event);
-  return response.data;
+export const createEvent = (newEvent) => {
+  return fetch(`${API_BASE_URL}/events`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(newEvent),
+  })
+    .then((response) => response.json())
+    .then((data) => data)
+    .catch((error) => {
+      console.error('Error creating event:', error);
+      throw error;
+    });
 };

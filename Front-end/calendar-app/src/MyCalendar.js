@@ -47,7 +47,7 @@ const MyCalendar = ({ events, onAddEvent }) => {
       />
 
       {isModalOpen && (
-        <div className="event-modal-overlay">
+        <div className="modal-overlay">
           <div className="event-modal">
             <AddEventForm
               selectedDate={selectedDate}

@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import MyCalendar from './MyCalendar';
-import AddEventForm from './AddEventForm';
-import EventDetailsModal from './EventDetailsModal';
 import { fetchEvents, createEvent } from './api';
+import EventDetailsModal from './EventDetailsModal';
+import './styles.css';
 
 const App = () => {
   const [events, setEvents] = useState([]);
-  const [isEventFormOpen, setIsEventFormOpen] = useState(false);
+  const [isEventDetailsModalOpen, setIsEventDetailsModalOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
 
   useEffect(() => {
@@ -19,7 +19,7 @@ const App = () => {
     createEvent(newEvent)
       .then((createdEvent) => {
         setEvents([...events, createdEvent]);
-        setIsEventFormOpen(false);
+        setIsEventDetailsModalOpen(false);
       })
       .catch((error) => console.error('Error adding event:', error));
   };
@@ -28,23 +28,19 @@ const App = () => {
     <div>
       <MyCalendar
         events={events}
-        onAddEvent={() => setIsEventFormOpen(true)}
-        onEventClick={(event) => setSelectedEvent(event)}
+        onAddEvent={handleAddEvent}
+        onEventClick={(event) => {
+          setSelectedEvent(event);
+          setIsEventDetailsModalOpen(true);
+        }}
       />
 
-      {isEventFormOpen && (
-        <AddEventForm
-          isOpen={isEventFormOpen}
-          onRequestClose={() => setIsEventFormOpen(false)}
-          onSubmit={handleAddEvent}
-        />
-      )}
-
-      {selectedEvent && (
+      {isEventDetailsModalOpen && (
         <EventDetailsModal
-          isOpen={selectedEvent !== null}
-          onRequestClose={() => setSelectedEvent(null)}
+          isOpen={isEventDetailsModalOpen}
+          onRequestClose={() => setIsEventDetailsModalOpen(false)}
           event={selectedEvent}
+          onAddEvent={handleAddEvent}
         />
       )}
     </div>
