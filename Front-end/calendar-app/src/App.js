@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import EventList from './eventList';
 import EventForm from './EventForm';
-import MyCalendar from './calendar'; // Import the calendar component
+import MyCalendar from './calendar'; 
 
 
 function App() {
