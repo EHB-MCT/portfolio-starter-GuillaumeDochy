@@ -1,37 +1,50 @@
 import React, { useState, useEffect } from 'react';
-import EventList from './eventList';
-import EventForm from './EventForm';
-import MyCalendar from './calendar'; 
+import MyCalendar from './MyCalendar';
+import { fetchEvents, createEvent } from './api';
+import EventDetailsModal from './EventDetailsModal';
+import './styles.css';
 
+const App = () => {
+  const [events, setEvents] = useState([]);
+  const [isEventDetailsModalOpen, setIsEventDetailsModalOpen] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState(null);
 
-function App() {
-   const [events, setEvents] = useState([]);
+  useEffect(() => {
+    fetchEvents()
+      .then((data) => setEvents(data))
+      .catch((error) => console.error('Error fetching events:', error));
+  }, []);
 
-   const addEvent = (eventData) => {
-    fetch('http://localhost:4000/api/events', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(eventData),
-    })
-      .then((response) => response.json())
-      .then((newEvent) => {
-        setEvents([...events, newEvent]);
+  const handleAddEvent = (newEvent) => {
+    createEvent(newEvent)
+      .then((createdEvent) => {
+        setEvents([...events, createdEvent]);
+        setIsEventDetailsModalOpen(false);
       })
-      .catch((error) => {
-        console.error('Error creating event:', error);
-      });
+      .catch((error) => console.error('Error adding event:', error));
   };
 
   return (
     <div>
-      <h1>My Calendar App</h1>
-      <EventForm onAddEvent={addEvent} />
-      <EventList />
-      <MyCalendar />
+      <MyCalendar
+        events={events}
+        onAddEvent={handleAddEvent}
+        onEventClick={(event) => {
+          setSelectedEvent(event);
+          setIsEventDetailsModalOpen(true);
+        }}
+      />
+
+      {isEventDetailsModalOpen && (
+        <EventDetailsModal
+          isOpen={isEventDetailsModalOpen}
+          onRequestClose={() => setIsEventDetailsModalOpen(false)}
+          event={selectedEvent}
+          onAddEvent={handleAddEvent}
+        />
+      )}
     </div>
   );
-}
+};
 
 export default App;
