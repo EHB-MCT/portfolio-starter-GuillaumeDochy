@@ -1,102 +1,187 @@
-const express = require("express")
-const app = express()
-const mongoose = require("mongoose")
-const bodyParser = require('body-parser')
-const cors = require('cors')
+const express = require("express");
+const app = express();
+const bodyParser = require("body-parser");
+const cors = require("cors");
+const { MongoClient } = require("mongodb");
 
-mongoose.connect('mongodb+srv://admin:admin@cluster0.0ml8z.mongodb.net/?retryWrites=true&w=majority', {
+app.use(bodyParser.json());
+app.use(
+  cors()
+);
+
+const mongoURL =
+  "mongodb+srv://admin:admin@cluster0.0ml8z.mongodb.net/?retryWrites=true&w=majority";
+const client = new MongoClient(mongoURL, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
 
-const db = mongoose.connection;
-db.on('error', console.error.bind(console, 'Connection error:'));
-db.once('open', () => {
-  console.log('Connected to MongoDB');
-});
-
-const port = process.env.PORT || 3000;
-
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-});
-
-app.use(bodyParser.json())
-app.use(cors())
-app.use(express.json());
-
-const eventSchema = new mongoose.Schema({
-  title: String,
-  description: String,
-  start: Date,
-  end: Date,
-  priority: String,
-});
-
-const Event = mongoose.model('Event', eventSchema);
-
-app.post('/api/events', async (req, res) => {
+async function connectToMongoDB() {
   try {
-    const event = new Event(req.body);
-    await event.save();
-    res.json(event);
+    await client.connect();
+    console.log("Connected to MongoDB");
   } catch (error) {
-    res.status(500).json({ error: 'Error creating event' });
+    console.error("Error connecting to MongoDB:", error);
+  }
+}
+
+connectToMongoDB();
+
+const eventCollection = client.db("Dev5").collection("Event");
+
+app.listen(4000, (err) => {
+  if (!err) {
+    console.log("Running on port " + 4000);
+  } else {
+    console.error(err);
   }
 });
 
-app.get('/api/events', async (req, res) => {
+/**
+ * Adds an event to the database
+ * 
+ * @body start - Date - start date and time of the event
+ * @body end - Date - end date and time of the event
+ * @body title - String - title of reservation (photoshoot etc.)
+ * @body description - String - description of the event
+ * @body priority - String - priority of the event
+ * @returns confirmation message of posting
+ */
+app.post("/api/events", async (req, res) => {
   try {
-    const events = await Event.find();
+    const { title, description, start, end, priority } = req.body;
+
+    if (!title || !description || !start || !end || !priority) {
+      return res.status(400).json({ error: "All fields are required" });
+    }
+
+    const event = {
+      title,
+      description,
+      start,
+      end,
+      priority,
+    };
+
+    const result = await eventCollection.insertOne(event);
+    res.json(result.ops[0]);
+  } catch (error) {
+    res.status(500).json({ error: "Error creating event" });
+  }
+});
+
+/**
+ * Gets all the reservations
+ * 
+ * @returns array of events
+ */
+app.get("/api/events", async (req, res) => {
+  try {
+    const events = await eventCollection.find().toArray();
     res.json(events);
   } catch (error) {
-    res.status(500).json({ error: 'Error fetching events' });
+    res.status(500).json({ error: "Error fetching events" });
   }
 });
 
-app.get('/api/events/important', async (req, res) => {
+/**
+ * Gets all the high priority reservations
+ * 
+ * @returns array of events
+ */
+app.get("/api/events/high", async (req, res) => {
   try {
-    const importantEvents = await Event.find({ priority: 'high' });
+    const importantEvents = await eventCollection.find({ priority: "high" }).toArray();
     res.json(importantEvents);
   } catch (error) {
-    res.status(500).json({ error: 'Error fetching important events' });
+    res.status(500).json({ error: "Error fetching important events" });
   }
 });
 
-app.get('/api/events/medium', async (req, res) => {
+/**
+ * Gets all the medium priority reservations
+ * 
+ * @returns array of events
+ */
+app.get("/api/events/medium", async (req, res) => {
   try {
-    const importantEvents = await Event.find({ priority: 'medium' }); 
-    res.json(importantEvents);
+    const mediumEvents = await eventCollection.find({ priority: "medium" }).toArray();
+    res.json(mediumEvents);
   } catch (error) {
-    res.status(500).json({ error: 'Error fetching medium important events' });
+    res.status(500).json({ error: "Error fetching medium important events" });
   }
 });
 
-app.get('/api/events/unimportant', async (req, res) => {
+/**
+ * Gets all the low priority reservations
+ * 
+ * @returns array of events
+ */
+app.get("/api/events/low", async (req, res) => {
   try {
-    const importantEvents = await Event.find({ priority: 'low' });
-    res.json(importantEvents);
+    const unimportantEvents = await eventCollection.find({ priority: "low" }).toArray();
+    res.json(unimportantEvents);
   } catch (error) {
-    res.status(500).json({ error: 'Error fetching unimportant events' });
+    res.status(500).json({ error: "Error fetching unimportant events" });
   }
 });
 
-app.put('/api/events/:id', async (req, res) => {
+/**
+ * Adds an event to the database
+ * 
+ * @param id - id of the requested event
+ * @body start - Date - start date and time of the event
+ * @body end - Date - end date and time of the event
+ * @body title - String - title of reservation (photoshoot etc.)
+ * @body description - String - description of the event
+ * @body priority - String - priority of the event
+ * @returns confirmation message of update
+ */
+app.put("/api/events/:id", async (req, res) => {
   try {
-    const event = await Event.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    res.json(event);
+    const eventId = req.params.id;
+    const { title, description, start, end, priority } = req.body;
+
+    if (!title || !description || !start || !end || !priority) {
+      return res.status(400).json({ error: "All fields are required" });
+    }
+
+    const updatedEvent = {
+      title,
+      description,
+      start,
+      end,
+      priority,
+    };
+
+    const result = await eventCollection.findOneAndUpdate(
+      { _id: new ObjectId(eventId) },
+      { $set: updatedEvent },
+      { returnOriginal: false }
+    );
+
+    if (!result.value) {
+      return res.status(404).json({ error: "Event not found" });
+    }
+
+    res.json(result.value);
   } catch (error) {
-    res.status(500).json({ error: 'Error updating event' });
+    res.status(500).json({ error: "Error updating event" });
   }
 });
 
-app.delete('/api/events/:id', async (req, res) => {
+/**
+ * deletes an event from the database
+ * 
+ * @param id - id of the requested event
+ * @returns confirmation message of deleted
+ */
+app.delete("/api/events/:id", async (req, res) => {
   try {
-    await Event.findByIdAndRemove(req.params.id);
-    res.json({ message: 'Event deleted' });
+    const eventId = req.params.id;
+    const result = await eventCollection.deleteOne({ _id: new ObjectId(eventId) });
+    res.json({ message: "Event deleted" });
   } catch (error) {
-    res.status(500).json({ error: 'Error deleting event' });
+    res.status(500).json({ error: "Error deleting event" });
   }
 });
-
-module.exports = app
