@@ -3,9 +3,9 @@ import Modal from 'react-modal';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import './styles.css';
-import { createEvent, updateEvent } from './api';
+import { createEvent, updateEvent, deleteEvent} from './api';
 
-const EventDetailsModal = ({ isOpen, onRequestClose, event, onAddEvent }) => {
+const EventDetailsModal = ({ isOpen, onRequestClose, event, onAddEvent, eventId}) => {
   const [newEvent, setNewEvent] = useState({
     title: '',
     description: '',
@@ -39,6 +39,14 @@ const EventDetailsModal = ({ isOpen, onRequestClose, event, onAddEvent }) => {
     }
 
     onRequestClose(); 
+  };
+
+  const handleDeleteEvent = async () => {
+    try {
+      await deleteEvent(event._id);
+    } catch (error) {
+      console.error(`Error deleting event: ${error.message}`);
+    }
   };
 
   return (
@@ -80,6 +88,7 @@ const EventDetailsModal = ({ isOpen, onRequestClose, event, onAddEvent }) => {
           <option value="high">High</option>
         </select>
         <button onClick={handleSaveEvent}>Save Event</button>
+      <button onClick={handleDeleteEvent}>Delete Event</button>
       </div>
     </Modal>
   );

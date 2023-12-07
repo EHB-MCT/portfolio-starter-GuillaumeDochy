@@ -37,6 +37,16 @@ app.listen(4000, (err) => {
   }
 });
 
+/**
+ * Adds an event to the database
+ * 
+ * @body start - Date - start date and time of the event
+ * @body end - Date - end date and time of the event
+ * @body title - String - title of reservation (photoshoot etc.)
+ * @body description - String - description of the event
+ * @body priority - String - priority of the event
+ * @returns confirmation message of posting
+ */
 app.post("/api/events", async (req, res) => {
   try {
     const { title, description, start, end, priority } = req.body;
@@ -60,6 +70,11 @@ app.post("/api/events", async (req, res) => {
   }
 });
 
+/**
+ * Gets all the reservations
+ * 
+ * @returns array of events
+ */
 app.get("/api/events", async (req, res) => {
   try {
     const events = await eventCollection.find().toArray();
@@ -69,6 +84,11 @@ app.get("/api/events", async (req, res) => {
   }
 });
 
+/**
+ * Gets all the high priority reservations
+ * 
+ * @returns array of events
+ */
 app.get("/api/events/high", async (req, res) => {
   try {
     const importantEvents = await eventCollection.find({ priority: "high" }).toArray();
@@ -78,6 +98,11 @@ app.get("/api/events/high", async (req, res) => {
   }
 });
 
+/**
+ * Gets all the medium priority reservations
+ * 
+ * @returns array of events
+ */
 app.get("/api/events/medium", async (req, res) => {
   try {
     const mediumEvents = await eventCollection.find({ priority: "medium" }).toArray();
@@ -87,6 +112,11 @@ app.get("/api/events/medium", async (req, res) => {
   }
 });
 
+/**
+ * Gets all the low priority reservations
+ * 
+ * @returns array of events
+ */
 app.get("/api/events/low", async (req, res) => {
   try {
     const unimportantEvents = await eventCollection.find({ priority: "low" }).toArray();
@@ -96,6 +126,17 @@ app.get("/api/events/low", async (req, res) => {
   }
 });
 
+/**
+ * Adds an event to the database
+ * 
+ * @param id - id of the requested event
+ * @body start - Date - start date and time of the event
+ * @body end - Date - end date and time of the event
+ * @body title - String - title of reservation (photoshoot etc.)
+ * @body description - String - description of the event
+ * @body priority - String - priority of the event
+ * @returns confirmation message of update
+ */
 app.put("/api/events/:id", async (req, res) => {
   try {
     const eventId = req.params.id;
@@ -129,6 +170,12 @@ app.put("/api/events/:id", async (req, res) => {
   }
 });
 
+/**
+ * deletes an event from the database
+ * 
+ * @param id - id of the requested event
+ * @returns confirmation message of deleted
+ */
 app.delete("/api/events/:id", async (req, res) => {
   try {
     const eventId = req.params.id;

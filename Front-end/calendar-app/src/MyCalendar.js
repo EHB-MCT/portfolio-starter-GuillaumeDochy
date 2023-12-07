@@ -20,6 +20,7 @@ const MyCalendar = ({onAddEvent, onUpdateEvent }) => {
     const fetchData = async () => {
       const fetchedEvents = await fetchEvents();
       setEvents(fetchedEvents);
+      console.log(fetchedEvents);
     };
 
     fetchData();
@@ -67,6 +68,7 @@ const MyCalendar = ({onAddEvent, onUpdateEvent }) => {
 
   return (
     <div>
+      <button onClick={handleSelectSlot}>Create Event</button>
       <Calendar
         localizer={localizer}
         events={events}

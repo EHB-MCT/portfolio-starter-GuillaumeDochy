@@ -2,6 +2,7 @@ const chai = require('chai');
 const chaiHttp = require('chai-http');
 const app = require('../index.js');
 const expect = chai.expect;
+const express = require('express')
 
 
 chai.use(chaiHttp);
@@ -10,17 +11,17 @@ chai.use(chaiHttp);
 describe('Calendar API', () => {
   let server; 
 
-  before((done) => {
-  server = app.listen(3001, (err) => {
-    if (err) {
-      console.error(err);
-      done(err);
-    } else {
-      console.log('Server is running on port 3000');
-      done();
-    }
-  });
-});
+//   before((done) => {
+//   server = app.listen(4000, (err) => {
+//     if (err) {
+//       console.error(err);
+//       done(err);
+//     } else {
+//       console.log('Server is running on port 3000');
+//       done();
+//     }
+//   });
+// });
 
   after((done) => {
     if (server) {
