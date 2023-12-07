@@ -4,12 +4,12 @@ import 'react-big-calendar/lib/css/react-big-calendar.css';
 import moment from 'moment';
 import AddEventForm from './AddEventForm';
 import EventDetailsModal from './EventDetailsModal';
-import { fetchEvents, createEvent } from './api';
+import { fetchEvents, createEvent, updateEvent} from './api';
 import './styles.css';
 
 const localizer = momentLocalizer(moment);
 
-const MyCalendar = () => {
+const MyCalendar = ({onAddEvent, onUpdateEvent }) => {
   const [events, setEvents] = useState([]);
   const [selectedDate, setSelectedDate] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -55,6 +55,16 @@ const MyCalendar = () => {
     setIsEventDetailsModalOpen(true);
   };
 
+  const handleUpdateEvent = async (updatedEvent) => {
+    try {
+      await updateEvent(selectedEvent._id, updatedEvent);
+    } catch (error) {
+      console.error('Failed to update event:', error);
+    }
+
+    setIsEventDetailsModalOpen(false);
+  };
+
   return (
     <div>
       <Calendar
@@ -81,7 +91,7 @@ const MyCalendar = () => {
           isOpen={isEventDetailsModalOpen}
           onRequestClose={() => setIsEventDetailsModalOpen(false)}
           event={selectedEvent}
-          onAddEvent={handleAddEvent}
+          onAddEvent={handleUpdateEvent}
         />
       )}
     </div>

@@ -26,3 +26,23 @@ export const createEvent = (newEvent) => {
       throw error;
     });
 };
+
+export const updateEvent = async (eventId, eventData) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/events/${eventId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(eventData),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to update event: ${response.status}`);
+    }
+
+    return await response.json(); 
+  } catch (error) {
+    throw new Error(`Failed to update event: ${error.message}`);
+  }
+};

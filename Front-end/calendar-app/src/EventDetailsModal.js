@@ -3,6 +3,7 @@ import Modal from 'react-modal';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import './styles.css';
+import { createEvent, updateEvent } from './api';
 
 const EventDetailsModal = ({ isOpen, onRequestClose, event, onAddEvent }) => {
   const [newEvent, setNewEvent] = useState({
@@ -25,14 +26,19 @@ const EventDetailsModal = ({ isOpen, onRequestClose, event, onAddEvent }) => {
     }
   }, [event]);
 
-  const handleSaveEvent = () => {
-    onAddEvent({
-      title: newEvent.title,
-      description: newEvent.description,
-      start: newEvent.start,
-      end: newEvent.end,
-      priority: newEvent.priority,
-    });
+  const handleSaveEvent = async () => {
+    try {
+      if (event) {
+        await updateEvent(event._id, newEvent);
+      } else {
+        const createdEvent = await createEvent(newEvent);
+        onAddEvent(createdEvent); 
+      }
+    } catch (error) { 
+      console.error('Error saving event:', error);
+    }
+
+    onRequestClose(); 
   };
 
   return (
