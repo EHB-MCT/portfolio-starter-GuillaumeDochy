@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import './styles.css';
 
-const AddEventForm = ({ selectedDate, onAddEvent, onClose }) => {
+const AddEventForm = ({ selectedDate, onAddEvent }) => {
   const [newEvent, setNewEvent] = useState({
     title: '',
     description: '',
@@ -13,11 +14,10 @@ const AddEventForm = ({ selectedDate, onAddEvent, onClose }) => {
 
   const handleSubmit = () => {
     onAddEvent(newEvent);
-    onClose();
   };
 
   return (
-    <div className="event-modal">
+    <div className="form-container">
       <div>
         <input
           type="text"
@@ -64,7 +64,6 @@ const AddEventForm = ({ selectedDate, onAddEvent, onClose }) => {
       </div>
       <div>
         <button onClick={handleSubmit}>Save Event</button>
-        <button onClick={onClose}>Cancel</button>
       </div>
     </div>
   );
