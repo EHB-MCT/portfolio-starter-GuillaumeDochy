@@ -14,6 +14,7 @@ const AddEventForm = ({ selectedDate, onAddEvent }) => {
 
   const handleSubmit = () => {
     onAddEvent(newEvent);
+    window.location.reload();
   };
 
   return (
