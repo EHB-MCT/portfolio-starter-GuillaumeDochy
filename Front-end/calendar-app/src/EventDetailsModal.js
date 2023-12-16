@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import Modal from 'react-modal';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import './styles.css';
-import { createEvent, updateEvent, deleteEvent} from './api';
+import { createEvent, updateEvent, deleteEvent } from './api';
 
-const EventDetailsModal = ({ isOpen, onRequestClose, event, onAddEvent, eventId}) => {
+const EventDetailsModal = ({ isOpen, onRequestClose, event, onAddEvent }) => {
   const [newEvent, setNewEvent] = useState({
     title: '',
     description: '',
@@ -32,25 +31,27 @@ const EventDetailsModal = ({ isOpen, onRequestClose, event, onAddEvent, eventId}
         await updateEvent(event._id, newEvent);
       } else {
         const createdEvent = await createEvent(newEvent);
-        onAddEvent(createdEvent); 
+        onAddEvent(createdEvent);
       }
-    } catch (error) { 
+      window.location.reload();
+    } catch (error) {
       console.error('Error saving event:', error);
     }
 
-    onRequestClose(); 
+    onRequestClose();
   };
 
   const handleDeleteEvent = async () => {
     try {
       await deleteEvent(event._id);
+      window.location.reload();
     } catch (error) {
       console.error(`Error deleting event: ${error.message}`);
     }
   };
 
   return (
-    <Modal isOpen={isOpen} onRequestClose={onRequestClose}>
+    <div>
       <h2>Event Details</h2>
       <div>
         <input
@@ -88,9 +89,9 @@ const EventDetailsModal = ({ isOpen, onRequestClose, event, onAddEvent, eventId}
           <option value="high">High</option>
         </select>
         <button onClick={handleSaveEvent}>Save Event</button>
-      <button onClick={handleDeleteEvent}>Delete Event</button>
+        <button onClick={handleDeleteEvent}>Delete Event</button>
       </div>
-    </Modal>
+    </div>
   );
 };
 

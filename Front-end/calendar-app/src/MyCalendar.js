@@ -4,12 +4,12 @@ import 'react-big-calendar/lib/css/react-big-calendar.css';
 import moment from 'moment';
 import AddEventForm from './AddEventForm';
 import EventDetailsModal from './EventDetailsModal';
-import { fetchEvents, createEvent, updateEvent} from './api';
+import { fetchEvents, createEvent, updateEvent } from './api';
 import './styles.css';
 
 const localizer = momentLocalizer(moment);
 
-const MyCalendar = ({onAddEvent, onUpdateEvent }) => {
+const MyCalendar = ({ onAddEvent, onUpdateEvent }) => {
   const [events, setEvents] = useState([]);
   const [selectedDate, setSelectedDate] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -20,7 +20,6 @@ const MyCalendar = ({onAddEvent, onUpdateEvent }) => {
     const fetchData = async () => {
       const fetchedEvents = await fetchEvents();
       setEvents(fetchedEvents);
-      console.log(fetchedEvents);
     };
 
     fetchData();
@@ -47,7 +46,6 @@ const MyCalendar = ({onAddEvent, onUpdateEvent }) => {
 
   const handleAddEvent = async (newEvent) => {
     const createdEvent = await createEvent(newEvent);
-
     setEvents([...events, createdEvent]);
   };
 
@@ -59,6 +57,7 @@ const MyCalendar = ({onAddEvent, onUpdateEvent }) => {
   const handleUpdateEvent = async (updatedEvent) => {
     try {
       await updateEvent(selectedEvent._id, updatedEvent);
+            window.location.reload();
     } catch (error) {
       console.error('Failed to update event:', error);
     }
@@ -76,6 +75,7 @@ const MyCalendar = ({onAddEvent, onUpdateEvent }) => {
         endAccessor="end"
         eventPropGetter={eventStyleGetter}
         style={{ height: 500 }}
+        views={['month']} 
         onSelectSlot={handleSelectSlot}
         onSelectEvent={handleSelectEvent}
       />
