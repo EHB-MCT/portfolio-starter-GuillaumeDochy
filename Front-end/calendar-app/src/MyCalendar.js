@@ -65,12 +65,21 @@ const MyCalendar = ({ onAddEvent, onUpdateEvent }) => {
     setIsEventDetailsModalOpen(false);
   };
 
+  const EventComponent = ({ event }) => (
+    <span>
+      <strong>{moment(event.start).format('HH:mm')} - </strong>
+      {event.title}
+    </span>
+  );
+
+  const sortedEvents = events.slice().sort((a, b) => new Date(a.start) - new Date(b.start));
+
   return (
     <div>
       <button onClick={handleSelectSlot}>Create Event</button>
       <Calendar
         localizer={localizer}
-        events={events}
+        events={sortedEvents}
         startAccessor="start"
         endAccessor="end"
         eventPropGetter={eventStyleGetter}
@@ -78,6 +87,9 @@ const MyCalendar = ({ onAddEvent, onUpdateEvent }) => {
         views={['month']} 
         onSelectSlot={handleSelectSlot}
         onSelectEvent={handleSelectEvent}
+        components={{
+          event: EventComponent,
+        }}
       />
 
       {isModalOpen && (
