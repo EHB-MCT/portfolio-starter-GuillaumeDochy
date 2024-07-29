@@ -4,16 +4,18 @@ import 'react-big-calendar/lib/css/react-big-calendar.css';
 import moment from 'moment';
 import AddEventForm from './AddEventForm';
 import EventDetailsModal from './EventDetailsModal';
+import EventListModal from './EventListModal';
 import { fetchEvents, createEvent, updateEvent } from './api';
 import './styles.css';
 
 const localizer = momentLocalizer(moment);
 
-const MyCalendar = ({ onAddEvent, onUpdateEvent }) => {
+const MyCalendar = () => {
   const [events, setEvents] = useState([]);
   const [selectedDate, setSelectedDate] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEventDetailsModalOpen, setIsEventDetailsModalOpen] = useState(false);
+  const [isEventListModalOpen, setIsEventListModalOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
 
   useEffect(() => {
@@ -50,6 +52,7 @@ const MyCalendar = ({ onAddEvent, onUpdateEvent }) => {
   };
 
   const handleSelectEvent = (event) => {
+    console.log("Event selected:", event);
     setSelectedEvent(event);
     setIsEventDetailsModalOpen(true);
   };
@@ -57,12 +60,22 @@ const MyCalendar = ({ onAddEvent, onUpdateEvent }) => {
   const handleUpdateEvent = async (updatedEvent) => {
     try {
       await updateEvent(selectedEvent._id, updatedEvent);
-            window.location.reload();
+      window.location.reload();
     } catch (error) {
       console.error('Failed to update event:', error);
     }
 
     setIsEventDetailsModalOpen(false);
+  };
+
+  const handleEventListItemClick = (event) => {
+    console.log("Event list item clicked:", event);
+    if (typeof handleSelectEvent === 'function') {
+      handleSelectEvent(event);
+      setIsEventListModalOpen(false); // Close the event list modal
+    } else {
+      console.error("handleSelectEvent is not a function");
+    }
   };
 
   const EventComponent = ({ event }) => (
@@ -77,6 +90,7 @@ const MyCalendar = ({ onAddEvent, onUpdateEvent }) => {
   return (
     <div>
       <button onClick={handleSelectSlot}>Create Event</button>
+      <button onClick={() => setIsEventListModalOpen(true)}>Show All Events</button>
       <Calendar
         localizer={localizer}
         events={sortedEvents}
@@ -84,7 +98,7 @@ const MyCalendar = ({ onAddEvent, onUpdateEvent }) => {
         endAccessor="end"
         eventPropGetter={eventStyleGetter}
         style={{ height: 500 }}
-        views={['month']} 
+        views={['month']}
         onSelectSlot={handleSelectSlot}
         onSelectEvent={handleSelectEvent}
         components={{
@@ -106,6 +120,14 @@ const MyCalendar = ({ onAddEvent, onUpdateEvent }) => {
           onRequestClose={() => setIsEventDetailsModalOpen(false)}
           event={selectedEvent}
           onAddEvent={handleUpdateEvent}
+        />
+      )}
+
+      {isEventListModalOpen && (
+        <EventListModal
+          events={sortedEvents}
+          onClose={() => setIsEventListModalOpen(false)}
+          onSelectEvent={handleEventListItemClick} // Make sure this is correctly passed
         />
       )}
     </div>
