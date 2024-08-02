@@ -1,6 +1,7 @@
 // This code is the base for the calendar
 // This code also implements the selecting of a date by clicking on it
 // This code also handles the priority system colors
+// This function also handles the implementation of other functions
 
 import React, { useState, useEffect } from 'react';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
@@ -76,7 +77,7 @@ const MyCalendar = () => {
     console.log("Event list item clicked:", event);
     if (typeof handleSelectEvent === 'function') {
       handleSelectEvent(event);
-      setIsEventListModalOpen(false); // Close the event list modal
+      setIsEventListModalOpen(false); 
     } else {
       console.error("handleSelectEvent is not a function");
     }
@@ -131,7 +132,7 @@ const MyCalendar = () => {
         <EventListModal
           events={sortedEvents}
           onClose={() => setIsEventListModalOpen(false)}
-          onSelectEvent={handleEventListItemClick} // Make sure this is correctly passed
+          onSelectEvent={handleEventListItemClick} 
         />
       )}
     </div>

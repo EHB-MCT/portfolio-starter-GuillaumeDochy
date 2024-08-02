@@ -27,7 +27,7 @@ function EventListModal({ events, onClose, onSelectEvent }) {
               <h3>{event.title}</h3>
               <p>{new Date(event.start).toLocaleDateString()}</p>
               <p>{event.description}</p>
-              <p>{moment(event.start).format('HH:mm')}</p> {/* Display time */}
+              <p>{moment(event.start).format('HH:mm')}</p>
             </li>
           ))}
         </ul>
