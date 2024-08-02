@@ -131,7 +131,7 @@ const MyCalendar = () => {
         <EventListModal
           events={sortedEvents}
           onClose={() => setIsEventListModalOpen(false)}
-          onSelectEvent={handleEventListItemClick} // Make sure this is correctly passed
+          onSelectEvent={handleEventListItemClick} 
         />
       )}
     </div>

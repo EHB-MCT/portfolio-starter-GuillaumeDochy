@@ -2,16 +2,12 @@ import React, { useState, useEffect } from 'react';
 import MyCalendar from './MyCalendar';
 import { fetchEvents, createEvent } from './api';
 import EventDetailsModal from './EventDetailsModal';
-import EventListModal from './EventListModal';
 import './styles.css';
 
 const App = () => {
   const [events, setEvents] = useState([]);
   const [isEventDetailsModalOpen, setIsEventDetailsModalOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
-  const [selectedDate, setSelectedDate] = useState(new Date());
-  const [isAddEventModalOpen, setAddEventModalOpen] = useState(false);
-  const [isEventListModalOpen, setEventListModalOpen] = useState(false);
 
   useEffect(() => {
     fetchEvents()
@@ -28,14 +24,6 @@ const App = () => {
       .catch((error) => console.error('Error adding event:', error));
   };
 
-  const handleOpenEventList = () => {
-    setEventListModalOpen(true);
-  };
-
-  const handleCloseEventList = () => {
-    setEventListModalOpen(false);
-  };
-
   return (
     <div>
       <MyCalendar
@@ -46,9 +34,6 @@ const App = () => {
           setIsEventDetailsModalOpen(true);
         }}
       />
-
-      <button onClick={handleOpenEventList}>Show All Events</button>
-      {isEventListModalOpen && <EventListModal events={events} onClose={handleCloseEventList} />}
 
       {isEventDetailsModalOpen && (
         <EventDetailsModal
