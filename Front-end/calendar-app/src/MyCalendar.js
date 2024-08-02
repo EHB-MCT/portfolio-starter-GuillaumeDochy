@@ -1,3 +1,7 @@
+// This code is the base for the calendar
+// This code also implements the selecting of a date by clicking on it
+// This code also handles the priority system colors
+
 import React, { useState, useEffect } from 'react';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';

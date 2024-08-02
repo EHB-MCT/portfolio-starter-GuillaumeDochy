@@ -1,3 +1,5 @@
+// This function handles the option to ;odify or delete an event when clicking on it
+
 import React, { useState, useEffect } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';

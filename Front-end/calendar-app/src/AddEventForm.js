@@ -1,3 +1,5 @@
+// This code is used to display the form used to add an event to the calendar
+
 import React, { useState } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';

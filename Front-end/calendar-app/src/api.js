@@ -1,3 +1,5 @@
+// This code is used to simplify the API calls in the other functions
+// This code has all the functions of PULL,PUSH, PUT and DELETE incorporated
 
 const API_BASE_URL = 'http://localhost:4000/api'; 
 

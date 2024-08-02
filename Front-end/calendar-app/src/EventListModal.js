@@ -1,3 +1,5 @@
+// This function handles the button used to display all the current events in the calendar
+
 import React from 'react';
 import moment from 'moment';
 import './styles.css'; 
